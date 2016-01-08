@@ -1,0 +1,37 @@
+{
+  "name": "dread-steed",
+  "version": "0.1.0",
+  "description": "Module that helps handle a salesforce connection and all the fun mess that comes with salesforce",
+  "main": "dread-steed.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/sandman45/dread-steed.git"
+  },
+  "keywords": [
+    "salesforce",
+    "connection",
+    "pool",
+    "helper"
+  ],
+  "author": "Matthew W. Sanders <msanders45@gmail.com> (http://mattsanders.org/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sandman45/dread-steed/issues"
+  },
+  "homepage": "https://github.com/sandman45/dread-steed",
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "mocha": "^2.3.4"
+  },
+  "dependencies": {
+    "bluebird": "^3.1.1",
+    "config": "^1.17.1",
+    "jsforce": "^1.5.0",
+    "lodash": "^3.10.1",
+    "moment": "^2.11.0",
+    "node-uuid": "^1.4.7"
+  }
+}
