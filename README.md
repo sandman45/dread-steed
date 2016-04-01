@@ -8,8 +8,7 @@ Module that helps handle a salesforce connection and all the fun mess that comes
     var DreadSteed = require('dread-steed');
     var dreadSteed = new DreadSteed();
     var yourSalesForceQueryHere = "SELECT id, Name FROM Things WHERE id = '1' ";
-
-    #queryAsync
+#queryAsync
 
     getAllTheThings = function(id){
         return dreadSteed.getConnection().then(function(conn){
@@ -21,7 +20,7 @@ Module that helps handle a salesforce connection and all the fun mess that comes
         });
     }
 
-    #updateAsync
+#updateAsync
 
     function updateAllTheThings( updateObj, name ) {
       return dreadSteed.getConnection().then(function(conn){
@@ -37,7 +36,7 @@ Module that helps handle a salesforce connection and all the fun mess that comes
       });
     }
 
-    #createAsync
+#createAsync
 
     function createAllTheThings( newObj, name ) {
       return dreadSteed.getConnection().then(function(conn){
@@ -65,8 +64,8 @@ Module that helps handle a salesforce connection and all the fun mess that comes
         });
     };
 
-    ##Tests
+##Tests
 
-    ## Release History
+## Release History
 
     * 0.1.0 Initial release
