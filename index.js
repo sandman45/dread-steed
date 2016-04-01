@@ -7,24 +7,19 @@ var configSF = require('config').salesforce;
 var dreadSteedConfig = require('config');
 var jsforce = require('jsforce');
 var moment = require('moment');
-//var log = require.main.require('vs-utils').Bunyan.getLogger('DREADSTEED');
 var promise = require('bluebird');
 var _ = require('lodash');
 var uuid = require('node-uuid');
-
 var EventEmitter = require('events').EventEmitter;
 var ee = new EventEmitter();
-ee.setMaxListeners(dreadSteedConfig.maxEventListeners); //
-
+ee.setMaxListeners(dreadSteedConfig.maxEventListeners);
 var conn = null;
 var checkConn = false;
 var initialized = moment().valueOf();
-
 var connectionRequests = [];
 var maxConnDuration = dreadSteedConfig.maxConnDuration;
 var maxRetries = dreadSteedConfig.maxRetries;
 var errorTypes = dreadSteedConfig.errorTypes;
-//var error = require('./gemini/systemError');
 
 /**
  * Pool
@@ -49,7 +44,7 @@ function Pool() {
 ee.on('sales-force-logged-in', function(){
   console.log('[ DREADSTEED CONN POOL - Create Connection ] Salesforce Connection Ready');
   ee.removeListener('sales-force-logged-in', function(){
-    //console.log('[ DREADSTEED CONN POOL - Connection Ready ] ');
+    console.log('[ DREADSTEED CONN POOL - Connection Ready ] ');
   });
 });
 
@@ -73,7 +68,7 @@ Pool.prototype.getConnection = function () {
         def.resolve( attachConnFunctions( conn ) ); //return connection asap
       }else{
         connectionLogin().then(function () {
-          deleteSalesforceErrors();
+
           def.resolve( attachConnFunctions( conn ) );
         }).catch(function( err ){
           console.log('[ DREADSTEED CONN POOL - ERROR ] Salesforce Connection NOT Ready');
@@ -237,28 +232,8 @@ function handleError( err ){
 
   console.log('[ DREADSTEED CONN POOL - Error Type ] : ' + errorType);
 
-  //writeSystemError(errorType);
-
   return retry;
 }
-//
-///**
-// * writeSystemError
-// * @param errorType
-// * @returns
-// */
-//function writeSystemError(errorType) {
-//  var now = new Date().valueOf();
-//  var entries = [];
-//  var body = 'Error connecting to SalesForce.';
-//  var sysId = 'SALESFORCE';
-//  entries.push({ name: 'cushion', type: errorType, userMessage: { title: 'Problem getting your agenda', body: body }, timestamp: now });
-//  return error.insert(sysId, null, entries);
-//}
-//
-//function deleteSalesforceErrors() {
-//  return error.deleteBySystem(['SALESFORCE']);
-//}
 
 /**
  * deathRattle
