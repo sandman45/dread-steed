@@ -3,8 +3,8 @@
  * Created by matthew.sanders on 9/18/15.
  */
 'use strict';
-var configSF = require('config').salesforce;
-var dreadSteedConfig = require('config');
+var configSF = require('config').dreadSteedConfig.salesforce;
+var dreadSteedConfig = require('config').dreadSteedConfig;
 var jsforce = require('jsforce');
 var moment = require('moment');
 var promise = require('bluebird');
@@ -115,7 +115,6 @@ function connectionLogin() {
       def.reject(err);
 
     } else {
-      deleteSalesforceErrors();
       initialized = moment().valueOf();
       checkConn = false;
 
