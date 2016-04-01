@@ -3,7 +3,8 @@
  * Created by matthew.sanders on 9/18/15.
  */
 'use strict';
-var configSF = require('config').salesforceGemini;
+var configSF = require('config').salesforce;
+var dreadSteedConfig = require('config');
 var jsforce = require('jsforce');
 var moment = require('moment');
 //var log = require.main.require('vs-utils').Bunyan.getLogger('DREADSTEED');
@@ -13,16 +14,16 @@ var uuid = require('node-uuid');
 
 var EventEmitter = require('events').EventEmitter;
 var ee = new EventEmitter();
-ee.setMaxListeners(100); //
+ee.setMaxListeners(dreadSteedConfig.maxEventListeners); //
 
 var conn = null;
 var checkConn = false;
 var initialized = moment().valueOf();
 
 var connectionRequests = [];
-var maxConnDuration = 10.000;
-var maxRetries = 2;
-var errorTypes = ['INVALID_SESSION_ID','INVALID_LOGIN','DUPLICATE_VALUE'];
+var maxConnDuration = dreadSteedConfig.maxConnDuration;
+var maxRetries = dreadSteedConfig.maxRetries;
+var errorTypes = dreadSteedConfig.errorTypes;
 //var error = require('./gemini/systemError');
 
 /**
