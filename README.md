@@ -22,7 +22,7 @@ Module that helps handle a salesforce connection and all the fun mess that comes
 
 ### updateAsync
 
-    function updateAllTheThings( updateObj, name ) {
+    updateAllTheThings = function( updateObj, name ) {
       return dreadSteed.getConnection().then(function(conn){
         return conn.updateAsync( name, updateObj ).then(function( res ){
           return res;
@@ -38,7 +38,7 @@ Module that helps handle a salesforce connection and all the fun mess that comes
 
 ### createAsync
 
-    function createAllTheThings( newObj, name ) {
+    createAllTheThings = function( newObj, name ) {
       return dreadSteed.getConnection().then(function(conn){
         return conn.createAsync(name, newObj).then(function(res) {
           return res;
