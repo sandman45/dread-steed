@@ -241,24 +241,24 @@ function handleError( err ){
 
   return retry;
 }
-
-/**
- * writeSystemError
- * @param errorType
- * @returns
- */
-function writeSystemError(errorType) {
-  var now = new Date().valueOf();
-  var entries = [];
-  var body = 'Error connecting to SalesForce.';
-  var sysId = 'SALESFORCE';
-  entries.push({ name: 'cushion', type: errorType, userMessage: { title: 'Problem getting your agenda', body: body }, timestamp: now });
-  return error.insert(sysId, null, entries);
-}
-
-function deleteSalesforceErrors() {
-  return error.deleteBySystem(['SALESFORCE']);
-}
+//
+///**
+// * writeSystemError
+// * @param errorType
+// * @returns
+// */
+//function writeSystemError(errorType) {
+//  var now = new Date().valueOf();
+//  var entries = [];
+//  var body = 'Error connecting to SalesForce.';
+//  var sysId = 'SALESFORCE';
+//  entries.push({ name: 'cushion', type: errorType, userMessage: { title: 'Problem getting your agenda', body: body }, timestamp: now });
+//  return error.insert(sysId, null, entries);
+//}
+//
+//function deleteSalesforceErrors() {
+//  return error.deleteBySystem(['SALESFORCE']);
+//}
 
 /**
  * deathRattle
