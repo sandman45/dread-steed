@@ -5,6 +5,26 @@
 ## Installation
 
     npm install dread-steed --save
+
+## Configuration
+    have this object in your config
+
+    module.exports = {
+      maxConnDuration:10.000,
+      maxRetries:2,
+      errorTypes:['INVALID_SESSION_ID','INVALID_LOGIN','DUPLICATE_VALUE'],
+      maxEventListeners:100,
+      salesforce: {
+        Username:        'salesforceapi@salesforce.com',
+        Password:        'salesforcepassword',
+        Endpoint:        'https://test.salesforce.com',//login.salesforce.com
+        TargetSystem:    'Salesforce.com test sandbox',
+        SecurityToken:   'thisisasecuritytoken',
+        IntegrationName: 'SOMEINTEGRATIONNAME'
+      }
+    };
+
+
 ## Usage
 
     var DreadSteed = require('dread-steed');
