@@ -3,8 +3,7 @@
  * Created by matthew.sanders on 9/18/15.
  */
 'use strict';
-var configSF = require('config').dreadSteedConfig.salesforce;
-var dreadSteedConfig = require('config').dreadSteedConfig;
+var config;
 var jsforce = require('jsforce');
 var moment = require('moment');
 var promise = require('bluebird');
@@ -12,30 +11,40 @@ var _ = require('lodash');
 var uuid = require('node-uuid');
 var EventEmitter = require('events').EventEmitter;
 var ee = new EventEmitter();
-ee.setMaxListeners(dreadSteedConfig.maxEventListeners);
 var conn = null;
 var checkConn = false;
 var initialized = moment().valueOf();
 var connectionRequests = [];
-var maxConnDuration = dreadSteedConfig.maxConnDuration;
-var maxRetries = dreadSteedConfig.maxRetries;
-var errorTypes = dreadSteedConfig.errorTypes;
+var maxConnDuration;
+var maxRetries;
+var errorTypes;
 
 /**
  * Pool
  * @constructor
  */
-function Pool() {
-  console.log('[ DREADSTEED CONN POOL - Instantiating Pool ]');
-  connectionLogin()
-    .then(function () {
+function Pool( _config ) {
+  if( _config ){
+    config = _config;
+    ee.setMaxListeners( config.maxEventListeners );
+    maxConnDuration = config.maxConnDuration;
+    maxRetries = config.maxRetries;
+    errorTypes = config.errorTypes;
 
-    })
-    .catch(function ( err ) {
-      console.log('[ DREADSTEED CONN POOL - ERROR ] Salesforce Connection NOT Ready: ' + err.message );
-      handleError(err);
-      throw err;
-    });
+    console.log('[ DREADSTEED CONN POOL - Instantiating Pool ]');
+    connectionLogin()
+      .then(function () {
+
+      })
+      .catch(function ( err ) {
+        console.log('[ DREADSTEED CONN POOL - ERROR ] Salesforce Connection NOT Ready: ' + err.message );
+        handleError(err);
+        throw err;
+      });
+
+  }else{
+    throw new Error("Configuration has not been set!");
+  }
 }
 
 /**
@@ -93,11 +102,11 @@ function connectionLogin() {
   var def = promise.defer();
   console.log('[ DREADSTEED CONN POOL - Create Connection ] Creating Salesforce Connection');
   conn = new jsforce.Connection({
-    loginUrl: configSF.Endpoint,
-    accessToken: configSF.SecurityToken
+    loginUrl: config.salesforce.Endpoint,
+    accessToken: config.salesforce.SecurityToken
   });
 
-  conn.login( configSF.Username, configSF.Password + configSF.SecurityToken, function ( err ) {
+  conn.login( config.salesforce.Username, config.salesforce.Password + config.salesforce.SecurityToken, function ( err ) {
     if ( err ) {
       checkConn = false;
       conn = null;

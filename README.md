@@ -1,15 +1,12 @@
 # dread-steed
     Module that helps handle a salesforce connection and all the fun mess that comes with salesforce..
     Ideally I would like it to add the ability to handle multiple connections in future versions.
-
 ## Installation
-
     npm install dread-steed --save
-
 ## Configuration
-    have this object in your config
+    pass this config object into dread steed
 
-    module.exports = {
+    var config = {
       maxConnDuration:10.000,
       maxRetries:2,
       errorTypes:['INVALID_SESSION_ID','INVALID_LOGIN','DUPLICATE_VALUE'],
@@ -23,15 +20,11 @@
         IntegrationName: 'SOMEINTEGRATIONNAME'
       }
     };
-
-
 ## Usage
-
     var DreadSteed = require('dread-steed');
-    var dreadSteed = new DreadSteed();
+    var dreadSteed = new DreadSteed(config);
     var yourSalesForceQueryHere = "SELECT id, Name FROM Things WHERE id = '1' ";
 ### queryAsync
-
     getAllTheThings = function(id){
         return dreadSteed.getConnection().then(function(conn){
             //use the connection!
@@ -41,9 +34,7 @@
             throw err;
         });
     }
-
 ### updateAsync
-
     updateAllTheThings = function( updateObj, name ) {
       return dreadSteed.getConnection().then(function(conn){
         return conn.updateAsync( name, updateObj ).then(function( res ){
@@ -57,9 +48,7 @@
         throw err;
       });
     }
-
 ### createAsync
-
     createAllTheThings = function( newObj, name ) {
       return dreadSteed.getConnection().then(function(conn){
         return conn.createAsync(name, newObj).then(function(res) {
@@ -73,9 +62,7 @@
         throw err;
       });
     }
-
 ### deleteAsync
-
     deleteTheThing = function ( Id ) {
       return dreadSteed.getConnection()
         .then(function ( conn ) {
@@ -85,11 +72,8 @@
            throw err;
         });
     };
-
 ##Tests
-
 ## Release History
-
     * 0.0.1 Initial release
     * 0.0.2
     * 0.0.3
