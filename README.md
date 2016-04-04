@@ -24,6 +24,8 @@
     var DreadSteed = require('dread-steed');
     var dreadSteed = new DreadSteed(config);
     var yourSalesForceQueryHere = "SELECT id, Name FROM Things WHERE id = '1' ";
+
+##Public functions
 ### queryAsync
     getAllTheThings = function(id){
         return dreadSteed.getConnection().then(function(conn){
