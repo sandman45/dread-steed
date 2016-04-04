@@ -2,7 +2,7 @@
     Module that helps handle a salesforce connection and all the fun mess that comes with salesforce..
     Ideally I would like it to add the ability to handle multiple connections in future versions.
 ## Installation
-    npm install https://github.com/sandman45/dread-steed.git#0.0.4 dread-steed --save
+    npm install https://github.com/sandman45/dread-steed.git#0.0.4 --save
 ## Configuration
     pass this config object into dread steed
 
