@@ -1,6 +1,6 @@
 {
   "name": "dread-steed",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Module that helps handle a salesforce connection and all the fun mess that comes with salesforce",
   "main": "dread-steed.js",
   "scripts": {
@@ -28,7 +28,6 @@
   },
   "dependencies": {
     "bluebird": "^3.1.1",
-    "config": "^1.17.1",
     "jsforce": "^1.5.0",
     "lodash": "^3.10.1",
     "moment": "^2.11.0",

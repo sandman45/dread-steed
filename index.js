@@ -33,18 +33,24 @@ var connectionRequests = [];
 var maxConnDuration;
 var maxRetries;
 var errorTypes;
-
+var errorCallback;
 /**
  * Pool
  * @constructor
  */
-function Pool( _config ) {
+function Pool( _config, _errorCallback ) {
   if( _config ){
     config = _config;
     ee.setMaxListeners( config.maxEventListeners );
     maxConnDuration = config.maxConnDuration;
     maxRetries = config.maxRetries;
     errorTypes = config.errorTypes;
+
+    if(!_.isFunction(_errorCallback)){
+      errorCallback = function(){};
+    }else{
+      errorCallback = _errorCallback;
+    }
 
     console.log('[ DREADSTEED CONN POOL - Instantiating Pool ]');
     connectionLogin()
@@ -254,6 +260,10 @@ function handleError( err ){
   }
 
   console.log('[ DREADSTEED CONN POOL - Error Type ] : ' + errorType);
+
+  if(retry === false) {
+    errorCallback( err );
+  }
 
   return retry;
 }
