@@ -20,9 +20,16 @@
         IntegrationName: 'SOMEINTEGRATIONNAME'
       }
     };
+
+##Error Handling
+    Optional if you want to handle errors and or log then in your own way
+    var errorCallback = function(err){
+        //err - object
+    };
+
 ## Usage
     var DreadSteed = require('dread-steed');
-    var dreadSteed = new DreadSteed(config);
+    var dreadSteed = new DreadSteed(config, errorCallback);
     var yourSalesForceQueryHere = "SELECT id, Name FROM Things WHERE id = '1' ";
 
 ##Public functions
@@ -81,3 +88,4 @@
     * 0.0.3
     * 0.0.4 Config changes
     * 0.0.5 copyright added updated readme
+    * 0.0.6 error handle callback
