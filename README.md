@@ -15,9 +15,7 @@
         Username:        'salesforceapi@salesforce.com',
         Password:        'salesforcepassword',
         Endpoint:        'https://test.salesforce.com',//login.salesforce.com
-        TargetSystem:    'Salesforce.com test sandbox',
         SecurityToken:   'thisisasecuritytoken',
-        IntegrationName: 'SOMEINTEGRATIONNAME'
       }
     };
 
@@ -89,3 +87,4 @@
     * 0.0.4 Config changes
     * 0.0.5 copyright added updated readme
     * 0.0.6 error handle callback
+    * 0.0.7 removed unused salesforce config from README.md
