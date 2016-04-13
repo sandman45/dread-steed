@@ -51,7 +51,7 @@ function Pool( _config, _callbacksConfig ) {
 
     if(_.isFunction(_callbacksConfig)){
       _callbacksConfig = {
-        onError: _callbacksConfig; //set onError callback to _callbacksConfig if _callbacksConfig is a function for backwards compatibility
+        onError: _callbacksConfig //set onError callback to _callbacksConfig if _callbacksConfig is a function for backwards compatibility
       }
     } else if(!_.isObject(_callbacksConfig)){
       _callbacksConfig = {}; //set to empty object if not an object;
