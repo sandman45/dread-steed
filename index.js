@@ -33,12 +33,15 @@ var connectionRequests = [];
 var maxConnDuration;
 var maxRetries;
 var errorTypes;
-var errorCallback;
+var callbacks = {
+  onError: function(){},
+  onConnection: function(){}
+}
 /**
  * Pool
  * @constructor
  */
-function Pool( _config, _errorCallback ) {
+function Pool( _config, _callbacksConfig ) {
   if( _config ){
     config = _config;
     ee.setMaxListeners( config.maxEventListeners );
@@ -46,11 +49,16 @@ function Pool( _config, _errorCallback ) {
     maxRetries = config.maxRetries;
     errorTypes = config.errorTypes;
 
-    if(!_.isFunction(_errorCallback)){
-      errorCallback = function(){};
-    }else{
-      errorCallback = _errorCallback;
+    if(_.isFunction(_callbacksConfig)){
+      _callbacksConfig = {
+        onError: _callbacksConfig //set onError callback to _callbacksConfig if _callbacksConfig is a function for backwards compatibility
+      }
+    } else if(!_.isObject(_callbacksConfig)){
+      _callbacksConfig = {}; //set to empty object if not an object;
     }
+
+
+    _.assign(callbacks, _callbacksConfig);
 
     console.log('[ DREADSTEED CONN POOL - Instantiating Pool ]');
     connectionLogin()
@@ -145,6 +153,7 @@ function connectionLogin() {
       def.reject(err);
 
     } else {
+      callbacks.onConnection();
       initialized = moment().valueOf();
       checkConn = false;
 
@@ -158,7 +167,7 @@ function connectionLogin() {
       if(connectionRequests.length > 0){
         connectionRequests = [];
       }
-
+      callbacks.onConnection(conn);
       def.resolve(conn);
     }
   });
@@ -262,7 +271,7 @@ function handleError( err ){
   console.log('[ DREADSTEED CONN POOL - Error Type ] : ' + errorType);
 
   if(retry === false) {
-    errorCallback( err );
+    callbacks.onError( err );
   }
 
   return retry;
