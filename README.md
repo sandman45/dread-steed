@@ -23,13 +23,13 @@ pass this config object into dread steed
       }
     };
 ```
-For handling of multiple saleforce connections
+For handling of multiple saleforce connections.  NOTE: Api user will switch if it hits an api limit and throws 'SERVER_UNAVAILABLE' otherwise it will just use the 1 api user
 
 ```javascript
     var config = {
       maxConnDuration:10.000,
       maxRetries:2,
-      errorTypes:['INVALID_SESSION_ID','INVALID_LOGIN','DUPLICATE_VALUE'],
+      errorTypes:['INVALID_SESSION_ID','INVALID_LOGIN','DUPLICATE_VALUE','SERVER_UNAVAILABLE],
       maxEventListeners:100,
       salesforce: [
         {
