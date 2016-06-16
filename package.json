@@ -1,6 +1,6 @@
 {
   "name": "dread-steed",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Module that helps handle a salesforce connection and all the fun mess that comes with salesforce",
   "main": "dread-steed.js",
   "scripts": {
