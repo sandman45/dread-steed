@@ -33,10 +33,14 @@ var connectionRequests = [];
 var maxConnDuration;
 var maxRetries;
 var errorTypes;
+var apiUsers = [];
+var apiCounter = 0;
+var currentApiUser = {};
+var multipleApiUsers = false;
 var callbacks = {
   onError: function(){},
   onConnection: function(){}
-}
+};
 /**
  * Pool
  * @constructor
@@ -57,6 +61,14 @@ function Pool( _config, _callbacksConfig ) {
       _callbacksConfig = {}; //set to empty object if not an object;
     }
 
+    if( _.isArray(config.salesforce) && config.salesforce.length > 1 ){
+      multipleApiUsers = true;
+      apiUsers = config.salesforce;
+    }else if(_.isObject(config.salesforce)){
+      apiUsers = [config.salesforce];
+    }else{
+      throw new Error('Salesforce configuration is not set.');
+    }
 
     _.assign(callbacks, _callbacksConfig);
 
@@ -72,7 +84,7 @@ function Pool( _config, _callbacksConfig ) {
       });
 
   }else{
-    throw new Error("Configuration has not been set!");
+    throw new Error('Configuration has not been set!');
   }
 }
 
@@ -127,15 +139,29 @@ Pool.prototype.getConnection = function () {
  * connectionLogin
  * @returns {*}
  */
-function connectionLogin() {
+function connectionLogin(switchApiUser) {
   var def = promise.defer();
   console.log('[ DREADSTEED CONN POOL - Create Connection ] Creating Salesforce Connection');
+  //need to be able to swap out user apis
+  if(switchApiUser){
+    apiCounter++;
+    if( apiCounter > apiUsers.length ){
+      apiCounter = 0;
+    }
+    console.log('[ DREADSTEED CONN POOL - Switching Api User ] From: ' + currentApiUser.Username);
+    currentApiUser = apiUsers[apiCounter];
+    console.log('[ DREADSTEED CONN POOL - Switching Api User ] To: ' + currentApiUser.Username);
+  }else{
+    currentApiUser = apiUsers[0];
+    console.log('[ DREADSTEED CONN POOL - Api User ] : ' + currentApiUser.Username);
+  }
+  
   conn = new jsforce.Connection({
-    loginUrl: config.salesforce.Endpoint,
-    accessToken: config.salesforce.SecurityToken
+    loginUrl: currentApiUser.Endpoint,
+    accessToken: currentApiUser.SecurityToken
   });
 
-  conn.login( config.salesforce.Username, config.salesforce.Password + config.salesforce.SecurityToken, function ( err ) {
+  conn.login( currentApiUser.Username, currentApiUser.Password + currentApiUser.SecurityToken, function ( err ) {
     if ( err ) {
       checkConn = false;
       conn = null;
@@ -255,6 +281,7 @@ function checkConnection( request ) {
 function handleError( err ){
   var errorType = 'Unknown Error Type.  Not found in expected errors array';
   var retry = false;
+  var switchApiUser = false;
 
   _.each( errorTypes, function( type ){
     if(err.errorCode === type || err.name === type || err.message.search( type ) !== -1 ){
@@ -266,6 +293,7 @@ function handleError( err ){
     case 'INVALID_SESSION_ID' : retry = true; break;
     case 'INVALID_LOGIN' : retry = false; break;
     case 'DUPLICATE_VALUE' : retry = false; break;
+    case 'SERVER_UNAVAILABLE': retry = multipleApiUsers; switchApiUser = multipleApiUsers; break;
   }
 
   console.log('[ DREADSTEED CONN POOL - Error Type ] : ' + errorType);
@@ -274,7 +302,7 @@ function handleError( err ){
     callbacks.onError( err );
   }
 
-  return retry;
+  return { retry: retry, switchApiUser: switchApiUser };
 }
 
 /**
@@ -284,11 +312,11 @@ function handleError( err ){
  * @param retryCount
  * @returns {*}
  */
-function deathRattle( err, queryObj, retryCount ){
+function deathRattle( err, queryObj, retryCount, switchApiUser ){
   console.log('[ DREADSTEED CONN POOL - DEATH RATTLE ] Retrying query: ' + retryCount + ', err : ' + err);
   if( err && retryCount < maxRetries ){
     //redo the connection
-    return connectionLogin().then(function(){
+    return connectionLogin(switchApiUser).then(function(){
       if(queryObj.query){
         return reRunQuery( queryObj.query ).then(function( res ){
           console.log('[ DREADSTEED CONN POOL - DEATH RATTLE ] Success on retry: ' + retryCount + ' from err : ' + err);
@@ -423,8 +451,9 @@ function attachQueryAsync( conn ) {
       var d = promise.defer();
       conn.query( query, function ( err, res ) {
         if( err ) {
-          if(handleError(err)){
-            deathRattle( err, {query:query}, 0).then( function( res ){
+          var handlerResult = handleError(err);
+          if(handlerResult.retry){
+            deathRattle( err, {query:query}, 0, handlerResult.switchApiUser).then( function( res ){
               d.resolve( res );
             }).catch(function( err ){
               d.reject( err );
@@ -453,8 +482,9 @@ function attachUpdateAsync( conn ){
       var d = promise.defer();
       conn.sobject( name ).update( updateObj, function( err, res ){
         if ( err ) {
-          if(handleError(err)){
-            deathRattle( err, {name:name, updateObj:updateObj}, 0 ).then( function( res ){
+          var handlerResult = handleError(err);
+          if(handlerResult.retry){
+            deathRattle( err, {name:name, updateObj:updateObj}, 0, handlerResult.switchApiUser ).then( function( res ){
               d.resolve( res );
             }).catch(function( err ){
               d.reject( err );
@@ -483,8 +513,9 @@ function attachCreateAsync( conn ){
       var d = promise.defer();
       conn.sobject( name ).create( createObj, function( err, res ){
         if ( err ) {
-          if(handleError(err)){
-            deathRattle( err, {name:name, createObj:createObj}, 0 ).then( function( res ){
+          var handlerResult = handleError(err);
+          if(handlerResult.retry){
+            deathRattle( err, {name:name, createObj:createObj}, 0, handlerResult.switchApiUser ).then( function( res ){
               d.resolve( res );
             }).catch(function( err ){
               d.reject( err );
@@ -513,8 +544,9 @@ function attachDeleteAsync( conn ){
       var d = promise.defer();
       conn.sobject( name ).delete( id, function( err, res ){
         if ( err ) {
-          if(handleError(err)){
-            deathRattle( err, {name:name, deleteObj:id}, 0 ).then( function( res ){
+          var handlerResult = handleError(err);
+          if(handlerResult.retry){
+            deathRattle( err, {name:name, deleteObj:id}, 0, handlerResult.switchApiUser ).then( function( res ){
               d.resolve( res );
             }).catch(function( err ){
               d.reject( err );

@@ -23,6 +23,43 @@ pass this config object into dread steed
       }
     };
 ```
+For handling of multiple saleforce connections
+
+```javascript
+    var config = {
+      maxConnDuration:10.000,
+      maxRetries:2,
+      errorTypes:['INVALID_SESSION_ID','INVALID_LOGIN','DUPLICATE_VALUE'],
+      maxEventListeners:100,
+      salesforce: [
+        {
+            Username:        'salesforceapi@salesforce.com',
+            Password:        'salesforcepassword',
+            Endpoint:        'https://test.salesforce.com',//login.salesforce.com
+            SecurityToken:   'thisisasecuritytoken',
+        },
+        {
+            Username:        'salesforceapi2@salesforce.com',
+            Password:        'salesforcepassword',
+            Endpoint:        'https://test.salesforce.com',//login.salesforce.com
+            SecurityToken:   'thisisasecuritytoken',
+        },
+        {
+            Username:        'salesforceapi3@salesforce.com',
+            Password:        'salesforcepassword',
+            Endpoint:        'https://test.salesforce.com',//login.salesforce.com
+            SecurityToken:   'thisisasecuritytoken',
+        },
+        {
+            Username:        'salesforceapi4@salesforce.com',
+            Password:        'salesforcepassword',
+            Endpoint:        'https://test.salesforce.com',//login.salesforce.com
+            SecurityToken:   'thisisasecuritytoken',
+        }
+      ]
+    };
+```
+
 
 ## Error Handling
 
