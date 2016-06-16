@@ -31,7 +31,7 @@ otherwise it will just use the 1 api user
     var config = {
       maxConnDuration:10.000,
       maxRetries:2,
-      errorTypes:['INVALID_SESSION_ID','INVALID_LOGIN','DUPLICATE_VALUE','SERVER_UNAVAILABLE],
+      errorTypes:['INVALID_SESSION_ID','INVALID_LOGIN','DUPLICATE_VALUE','SERVER_UNAVAILABLE'],
       maxEventListeners:100,
       salesforce: [
         {
