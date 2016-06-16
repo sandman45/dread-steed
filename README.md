@@ -23,7 +23,9 @@ pass this config object into dread steed
       }
     };
 ```
-For handling of multiple saleforce connections.  NOTE: Api user will switch if it hits an api limit and throws 'SERVER_UNAVAILABLE' otherwise it will just use the 1 api user
+For handling of multiple saleforce connections.  
+NOTE: Api user will switch if it hits an api limit and throws SERVER_UNAVAILABLE 
+otherwise it will just use the 1 api user
 
 ```javascript
     var config = {
