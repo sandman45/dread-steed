@@ -155,7 +155,7 @@ function connectionLogin(switchApiUser) {
     currentApiUser = apiUsers[0];
     console.log('[ DREADSTEED CONN POOL - Api User ] : ' + currentApiUser.Username);
   }
-  
+
   conn = new jsforce.Connection({
     loginUrl: currentApiUser.Endpoint,
     accessToken: currentApiUser.SecurityToken
@@ -294,6 +294,7 @@ function handleError( err ){
     case 'INVALID_LOGIN' : retry = false; break;
     case 'DUPLICATE_VALUE' : retry = false; break;
     case 'SERVER_UNAVAILABLE': retry = multipleApiUsers; switchApiUser = multipleApiUsers; break;
+    case 'REQUEST_LIMIT_EXCEEDED': retry = multipleApiUsers; switchApiUser = multipleApiUsers; break;
   }
 
   console.log('[ DREADSTEED CONN POOL - Error Type ] : ' + errorType);
