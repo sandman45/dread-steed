@@ -315,41 +315,26 @@ function handleError( err ){
  */
 function deathRattle( err, queryObj, retryCount, switchApiUser ){
   console.log('[ DREADSTEED CONN POOL - DEATH RATTLE ] Retrying query: ' + retryCount + ', err : ' + err);
+
+  var success = function(res){
+    console.log('[ DREADSTEED CONN POOL - DEATH RATTLE ] Success on retry: ' + retryCount + ' from err : ' + err);
+    return res;
+  };
+  var error = function (err) {
+    console.log('[ DREADSTEED CONN POOL - DEATH RATTLE ] Error on retry: ' + retryCount + ' from err : ' + err);
+    throw err;
+  };
   if( err && retryCount < maxRetries ){
     //redo the connection
     return connectionLogin(switchApiUser).then(function(){
       if(queryObj.query){
-        return reRunQuery( queryObj.query ).then(function( res ){
-          console.log('[ DREADSTEED CONN POOL - DEATH RATTLE ] Success on retry: ' + retryCount + ' from err : ' + err);
-          return res;
-        }).catch(function( err ){
-          console.log('[ DREADSTEED CONN POOL - DEATH RATTLE ] Error on retry: ' + retryCount + ' from err : ' + err);
-          throw err;
-        });
+        return reRunQuery( queryObj.query ).then(success()).catch(error());
       }else if(queryObj.updateObj){
-        return reRunUpdate( queryObj.name, queryObj.updateObj ).then(function( res ){
-          console.log('[ DREADSTEED CONN POOL - DEATH RATTLE ] Success on retry: ' + retryCount + ' from err : ' + err);
-          return res;
-        }).catch(function( err ){
-          console.log('[ DREADSTEED CONN POOL - DEATH RATTLE ] Error on retry: ' + retryCount + ' from err : ' + err);
-          throw err;
-        });
+        return reRunUpdate( queryObj.name, queryObj.updateObj ).then(success()).catch(error());
       }else if(queryObj.createObj){
-        return reRunCreate( queryObj.name, queryObj.createObj ).then(function( res ){
-          console.log('[ DREADSTEED CONN POOL - DEATH RATTLE ] Success on retry: ' + retryCount + ' from err : ' + err);
-          return res;
-        }).catch(function( err ){
-          console.log('[ DREADSTEED CONN POOL - DEATH RATTLE ] Error on retry: ' + retryCount + ' from err : ' + err);
-          throw err;
-        });
+        return reRunCreate( queryObj.name, queryObj.createObj ).then(success()).catch(error());
       }else if(queryObj.deleteObj){
-        return reRunDelete( queryObj.name, queryObj.deleteObj ).then(function( res ){
-          console.log('[ DREADSTEED CONN POOL - DEATH RATTLE ] Success on retry: ' + retryCount + ' from err : ' + err);
-          return res;
-        }).catch(function( err ){
-          console.log('[ DREADSTEED CONN POOL - DEATH RATTLE ] Error on retry: ' + retryCount + ' from err : ' + err);
-          throw err;
-        });
+        return reRunDelete( queryObj.name, queryObj.deleteObj ).then(success()).catch(error());
       }
     }).catch(function( err ){
       retryCount++;

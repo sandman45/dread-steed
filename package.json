@@ -23,14 +23,15 @@
   },
   "homepage": "https://github.com/sandman45/dread-steed",
   "devDependencies": {
-    "chai": "^3.4.1",
-    "mocha": "^2.3.4"
+    "chai": "3.4.1",
+    "mocha": "2.3.4",
+    "sinon": "1.17.4"
   },
   "dependencies": {
-    "bluebird": "^3.1.1",
-    "jsforce": "^1.5.0",
-    "lodash": "^3.10.1",
-    "moment": "^2.11.0",
-    "node-uuid": "^1.4.7"
+    "bluebird": "3.1.1",
+    "jsforce": "1.5.0",
+    "lodash": "3.10.1",
+    "moment": "2.11.0",
+    "node-uuid": "1.4.7"
   }
 }
