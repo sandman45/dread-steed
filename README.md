@@ -169,3 +169,5 @@ If you want to use callbacks for more than just error handling, you can optional
 * 0.0.7 removed unused salesforce config from README.md
 * 0.0.8 allow optional callback for successful salesforce connections/re-connections
 * 0.0.9 allow multiple api users to switch to when api limits are hit or server unavailable happens
+* 0.0.10 Code cleanup and package json updates
+* 0.0.11 changed to MIT license added LICENSE file
