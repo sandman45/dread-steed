@@ -17,7 +17,8 @@
     "helper"
   ],
   "author": "Matthew W. Sanders <msanders45@gmail.com> (http://mattsanders.org/)",
-  "license": "ISC",
+  "contributors": ["Jess Haddow"],
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/sandman45/dread-steed/issues"
   },
