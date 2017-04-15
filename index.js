@@ -40,6 +40,7 @@ var ee = new EventEmitter();
 var conn = null;
 var checkConn = false;
 var initialized = moment().valueOf();
+var silent;
 var connectionRequests = [];
 var maxConnDuration;
 var maxRetries;
@@ -59,6 +60,7 @@ var callbacks = {
 function Pool( _config, _callbacksConfig ) {
   if( _config ){
     config = _config;
+    silent = config;
     ee.setMaxListeners( config.maxEventListeners );
     maxConnDuration = config.maxConnDuration;
     maxRetries = config.maxRetries;
