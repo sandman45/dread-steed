@@ -83,13 +83,13 @@ function Pool( _config, _callbacksConfig ) {
 
     _.assign(callbacks, _callbacksConfig);
 
-    console.log('[ DREADSTEED CONN POOL - Instantiating Pool ]');
+    battlecry('[ DREADSTEED CONN POOL - Instantiating Pool ]');
     connectionLogin()
       .then(function () {
 
       })
       .catch(function ( err ) {
-        console.log('[ DREADSTEED CONN POOL - ERROR ] Salesforce Connection NOT Ready: ' + err.message );
+        battlecry('[ DREADSTEED CONN POOL - ERROR ] Salesforce Connection NOT Ready: ' + err.message );
         handleError(err);
         throw err;
       });
@@ -100,12 +100,24 @@ function Pool( _config, _callbacksConfig ) {
 }
 
 /**
+ * Outputs status messages to console if config.silent == false 
+ * @param status 
+ * @returns 
+ */
+function battlecry (status) {
+  if(silent) {
+    return;
+  }
+  console.log(status);
+}
+
+/**
  * event listener for sales-force-logged-in
  */
 ee.on('sales-force-logged-in', function(){
-  console.log('[ DREADSTEED CONN POOL - Create Connection ] Salesforce Connection Ready');
+  battlecry('[ DREADSTEED CONN POOL - Create Connection ] Salesforce Connection Ready');
   ee.removeListener('sales-force-logged-in', function(){
-    console.log('[ DREADSTEED CONN POOL - Connection Ready ] ');
+    battlecry('[ DREADSTEED CONN POOL - Connection Ready ] ');
   });
 });
 
@@ -119,8 +131,8 @@ Pool.prototype.getConnection = function () {
     connectionLogin().then(function () {
       def.resolve( attachConnFunctions( conn ) );
     }).catch(function( err ){
-      console.log('[ DREADSTEED CONN POOL - ERROR ] Salesforce Connection NOT Ready');
-      console.log( err );
+      battlecry('[ DREADSTEED CONN POOL - ERROR ] Salesforce Connection NOT Ready');
+      battlecry( err );
       def.reject(err);
     });
   }else {
@@ -132,14 +144,14 @@ Pool.prototype.getConnection = function () {
 
           def.resolve( attachConnFunctions( conn ) );
         }).catch(function( err ){
-          console.log('[ DREADSTEED CONN POOL - ERROR ] Salesforce Connection NOT Ready');
-          console.log( err );
+          battlecry('[ DREADSTEED CONN POOL - ERROR ] Salesforce Connection NOT Ready');
+          battlecry( err );
           def.reject(err);
         });
       }
     }).catch(function( err ){
-      console.log('[ DREADSTEED CONN POOL - ERROR ] Connection Duration Error');
-      console.log( err );
+      battlecry('[ DREADSTEED CONN POOL - ERROR ] Connection Duration Error');
+      battlecry( err );
       def.reject(err);
     });
   }
@@ -152,19 +164,19 @@ Pool.prototype.getConnection = function () {
  */
 function connectionLogin(switchApiUser) {
   var def = promise.defer();
-  console.log('[ DREADSTEED CONN POOL - Create Connection ] Creating Salesforce Connection');
+  battlecry('[ DREADSTEED CONN POOL - Create Connection ] Creating Salesforce Connection');
   //need to be able to swap out user apis
   if(switchApiUser){
     apiCounter++;
     if( apiCounter > apiUsers.length ){
       apiCounter = 0;
     }
-    console.log('[ DREADSTEED CONN POOL - Switching Api User ] From: ' + currentApiUser.Username);
+    battlecry('[ DREADSTEED CONN POOL - Switching Api User ] From: ' + currentApiUser.Username);
     currentApiUser = apiUsers[apiCounter];
-    console.log('[ DREADSTEED CONN POOL - Switching Api User ] To: ' + currentApiUser.Username);
+    battlecry('[ DREADSTEED CONN POOL - Switching Api User ] To: ' + currentApiUser.Username);
   }else{
     currentApiUser = apiUsers[0];
-    console.log('[ DREADSTEED CONN POOL - Api User ] : ' + currentApiUser.Username);
+    battlecry('[ DREADSTEED CONN POOL - Api User ] : ' + currentApiUser.Username);
   }
 
   conn = new jsforce.Connection({
@@ -176,8 +188,8 @@ function connectionLogin(switchApiUser) {
     if ( err ) {
       checkConn = false;
       conn = null;
-      console.log('[ DREADSTEED CONN POOL - ERROR ] : ' + err.message);
-      console.log('[ DREADSTEED CONN POOL - ERROR ] Destroying Connection');
+      battlecry('[ DREADSTEED CONN POOL - ERROR ] : ' + err.message);
+      battlecry('[ DREADSTEED CONN POOL - ERROR ] Destroying Connection');
 
       _.each(connectionRequests, function(req){
         ee.emit('sales-force-reconnect-'+req.uuid, {loggedIn:false, uuid:req.uuid});
@@ -228,7 +240,7 @@ function connectionLogout(){
         d.reject( err );
       }
     }
-    console.log('[ DREADSTEED CONN POOL - Connection ] Session has been expired.');
+    battlecry('[ DREADSTEED CONN POOL - Connection ] Session has been expired.');
     d.resolve(true);
   });
   return d.promise;
@@ -245,10 +257,10 @@ function checkConnection( request ) {
   if( !checkConn ){
     checkConn = true;
     var calcDur = checkDuration();
-    console.log('[ DREADSTEED CONN POOL ] Duration of Connection : ' + calcDur + ' hours');
+    battlecry('[ DREADSTEED CONN POOL ] Duration of Connection : ' + calcDur + ' hours');
     if ( calcDur >= maxConnDuration ){
-      console.log('[ DREADSTEED CONN POOL ] Duration of Connection : ' + calcDur + ' hours');
-      console.log('[ DREADSTEED CONN POOL ] Logging out Connection at : ' + calcDur);
+      battlecry('[ DREADSTEED CONN POOL ] Duration of Connection : ' + calcDur + ' hours');
+      battlecry('[ DREADSTEED CONN POOL ] Logging out Connection at : ' + calcDur);
       connectionLogout().then(function( renew ){
         d.resolve( renew );
       }).catch(function( err ){
@@ -267,14 +279,14 @@ function checkConnection( request ) {
      */
     ee.on('sales-force-reconnect-'+request.uuid, function( obj ){
       if(!obj.loggedIn){
-        console.log('[ DREADSTEED CONN POOL - ERROR ] Cannot process request ' + request.uuid + ' : ' + obj.uuid + ', logged in:' + obj.loggedIn);
+        battlecry('[ DREADSTEED CONN POOL - ERROR ] Cannot process request ' + request.uuid + ' : ' + obj.uuid + ', logged in:' + obj.loggedIn);
         //TODO: return true which would retry the connection?
       }else{
-        console.log('[ DREADSTEED CONN POOL - Connection Re-Established ] Processing request ' + request.uuid + ' : ' + obj.uuid + ', logged in:' + obj.loggedIn);
+        battlecry('[ DREADSTEED CONN POOL - Connection Re-Established ] Processing request ' + request.uuid + ' : ' + obj.uuid + ', logged in:' + obj.loggedIn);
       }
 
       ee.removeListener('sales-force-reconnect-'+request.uuid, function(){
-        console.log('[ DREADSTEED CONN POOL EVENTS] Remove Listener : ' + request.uuid + ' ');
+        battlecry('[ DREADSTEED CONN POOL EVENTS] Remove Listener : ' + request.uuid + ' ');
       });
 
       d.resolve(false);
@@ -308,7 +320,7 @@ function handleError( err ){
     case 'REQUEST_LIMIT_EXCEEDED': retry = multipleApiUsers; switchApiUser = multipleApiUsers; break;
   }
 
-  console.log('[ DREADSTEED CONN POOL - Error Type ] : ' + errorType);
+  battlecry('[ DREADSTEED CONN POOL - Error Type ] : ' + errorType);
 
   if(retry === false) {
     callbacks.onError( err );
@@ -325,14 +337,14 @@ function handleError( err ){
  * @returns {*}
  */
 function deathRattle( err, queryObj, retryCount, switchApiUser ){
-  console.log('[ DREADSTEED CONN POOL - DEATH RATTLE ] Retrying query: ' + retryCount + ', err : ' + err);
+  battlecry('[ DREADSTEED CONN POOL - DEATH RATTLE ] Retrying query: ' + retryCount + ', err : ' + err);
 
   var success = function(res){
-    console.log('[ DREADSTEED CONN POOL - DEATH RATTLE ] Success on retry: ' + retryCount + ' from err : ' + err);
+    battlecry('[ DREADSTEED CONN POOL - DEATH RATTLE ] Success on retry: ' + retryCount + ' from err : ' + err);
     return res;
   };
   var error = function (err) {
-    console.log('[ DREADSTEED CONN POOL - DEATH RATTLE ] Error on retry: ' + retryCount + ' from err : ' + err);
+    battlecry('[ DREADSTEED CONN POOL - DEATH RATTLE ] Error on retry: ' + retryCount + ' from err : ' + err);
     throw err;
   };
   if( err && retryCount < maxRetries ){
@@ -352,7 +364,7 @@ function deathRattle( err, queryObj, retryCount, switchApiUser ){
       return deathRattle( err, queryObj, retryCount );
     });
   }else {
-    console.log('[ DREADSTEED CONN POOL - ERROR ] No Error or Max Retry Exceeded');
+    battlecry('[ DREADSTEED CONN POOL - ERROR ] No Error or Max Retry Exceeded');
     throw err;
   }
 }
