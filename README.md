@@ -12,6 +12,7 @@ pass this config object into dread steed
     var config = {
       maxConnDuration:10.000,
       maxRetries:2,
+      silent:true, // silence dreadsteed log messages Defaults to false
       errorTypes:['INVALID_SESSION_ID','INVALID_LOGIN','DUPLICATE_VALUE','SERVER_UNAVAILABLE','REQUEST_LIMIT_EXCEEDED'],
       maxEventListeners:100,
       salesforce: {
@@ -30,6 +31,7 @@ otherwise it will just use the 1 api user
     var config = {
       maxConnDuration:10.000,
       maxRetries:2,
+      silent:true, // silence dreadsteed log messages Defaults to false
       errorTypes:['INVALID_SESSION_ID','INVALID_LOGIN','DUPLICATE_VALUE','SERVER_UNAVAILABLE','REQUEST_LIMIT_EXCEEDED'],
       maxEventListeners:100,
       salesforce: [
