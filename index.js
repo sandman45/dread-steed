@@ -40,7 +40,7 @@ var ee = new EventEmitter();
 var conn = null;
 var checkConn = false;
 var initialized = moment().valueOf();
-var silent;
+var silent = false;
 var connectionRequests = [];
 var maxConnDuration;
 var maxRetries;
