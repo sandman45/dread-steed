@@ -40,7 +40,7 @@ var ee = new EventEmitter();
 var conn = null;
 var checkConn = false;
 var initialized = moment().valueOf();
-var silent = false;
+var silent;
 var connectionRequests = [];
 var maxConnDuration;
 var maxRetries;
@@ -60,7 +60,7 @@ var callbacks = {
 function Pool( _config, _callbacksConfig ) {
   if( _config ){
     config = _config;
-    silent = config.silent;
+    silent = config.silent || false;
     ee.setMaxListeners( config.maxEventListeners );
     maxConnDuration = config.maxConnDuration;
     maxRetries = config.maxRetries;
@@ -102,9 +102,9 @@ function Pool( _config, _callbacksConfig ) {
 }
 
 /**
- * Outputs status messages to console if config.silent == false 
- * @param status 
- * @returns 
+ * Outputs status messages to console if config.silent == false
+ * @param status
+ * @returns
  */
 function battlecry (status) {
   if(silent) {
