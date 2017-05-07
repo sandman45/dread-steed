@@ -31,7 +31,6 @@
 'use strict';
 var config;
 var jsforce = require('jsforce');
-var moment = require('moment');
 var promise = require('bluebird');
 var _ = require('lodash');
 var uuid = require('node-uuid');
@@ -39,7 +38,7 @@ var EventEmitter = require('events').EventEmitter;
 var ee = new EventEmitter();
 var conn = null;
 var checkConn = false;
-var initialized = moment().valueOf();
+var initialized = Date.now();
 var silent;
 var connectionRequests = [];
 var maxConnDuration;
@@ -205,7 +204,7 @@ function connectionLogin(switchApiUser) {
 
     } else {
       callbacks.onConnection();
-      initialized = moment().valueOf();
+      initialized = Date.now();
       checkConn = false;
 
       ee.emit('sales-force-logged-in');
@@ -581,7 +580,7 @@ function attachDeleteAsync( conn ){
  * @returns {number}
  */
 function checkDuration(){
-  var dur = moment().valueOf() - initialized.valueOf();
+  var dur = Date.now() - initialized;
   var calcDur = (dur / (60 * 1000 * 60)).toFixed(3);
   return calcDur;
 }
