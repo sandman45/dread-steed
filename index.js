@@ -32,7 +32,11 @@
 var config;
 var jsforce = require('jsforce');
 var promise = require('bluebird');
-var _ = require('lodash');
+var each = require('lodash.foreach');
+var isObject = require('lodash.isobject');
+var isArray = require('lodash.isarray');
+var isFunction = require('lodash.isfunction');
+var assign = require('lodash.assign');
 var uuid = require('node-uuid');
 var EventEmitter = require('events').EventEmitter;
 var ee = new EventEmitter();
@@ -65,24 +69,24 @@ function Pool( _config, _callbacksConfig ) {
     maxRetries = config.maxRetries;
     errorTypes = config.errorTypes;
 
-    if(_.isFunction(_callbacksConfig)){
+    if(isFunction(_callbacksConfig)){
       _callbacksConfig = {
         onError: _callbacksConfig //set onError callback to _callbacksConfig if _callbacksConfig is a function for backwards compatibility
       }
-    } else if(!_.isObject(_callbacksConfig)){
+    } else if(!isObject(_callbacksConfig)){
       _callbacksConfig = {}; //set to empty object if not an object;
     }
 
-    if( _.isArray(config.salesforce) && config.salesforce.length > 1 ){
+    if(isArray(config.salesforce) && config.salesforce.length > 1 ){
       multipleApiUsers = true;
       apiUsers = config.salesforce;
-    }else if(_.isObject(config.salesforce)){
+    }else if(isObject(config.salesforce)){
       apiUsers = [config.salesforce];
     }else{
       throw new Error('Salesforce configuration is not set.');
     }
 
-    _.assign(callbacks, _callbacksConfig);
+    assign(callbacks, _callbacksConfig);
 
     battlecry('[ DREADSTEED CONN POOL - Instantiating Pool ]');
     connectionLogin()
@@ -192,7 +196,7 @@ function connectionLogin(switchApiUser) {
       battlecry('[ DREADSTEED CONN POOL - ERROR ] : ' + err.message);
       battlecry('[ DREADSTEED CONN POOL - ERROR ] Destroying Connection');
 
-      _.each(connectionRequests, function(req){
+      each(connectionRequests, function(req){
         ee.emit('sales-force-reconnect-'+req.uuid, {loggedIn:false, uuid:req.uuid});
       });
       //clear out our connection requests
@@ -209,7 +213,7 @@ function connectionLogin(switchApiUser) {
 
       ee.emit('sales-force-logged-in');
 
-      _.each(connectionRequests, function(req){
+      each(connectionRequests, function(req){
         ee.emit('sales-force-reconnect-'+req.uuid, {loggedIn:true, uuid:req.uuid});
       });
 
@@ -307,7 +311,7 @@ function handleError( err ){
   var retry = false;
   var switchApiUser = false;
 
-  _.each( errorTypes, function( type ){
+  each( errorTypes, function( type ){
     if(err.errorCode === type || err.name === type || err.message.search( type ) !== -1 ){
       errorType = type;
     }
