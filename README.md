@@ -173,3 +173,4 @@ If you want to use callbacks for more than just error handling, you can optional
 * 0.0.9 allow multiple api users to switch to when api limits are hit or server unavailable happens
 * 0.0.10 Code cleanup and package json updates
 * 0.0.11 changed to MIT license added LICENSE file
+* 0.1.0 added a silent option to ignore console logs
