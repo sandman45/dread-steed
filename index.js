@@ -319,6 +319,7 @@ function handleError( err ){
 
   switch( errorType ){
     case 'INVALID_SESSION_ID' : retry = true; break;
+    case 'UNABLE_TO_LOCK_ROW' : retry = true; break;
     case 'INVALID_LOGIN' : retry = false; break;
     case 'DUPLICATE_VALUE' : retry = false; break;
     case 'SERVER_UNAVAILABLE': retry = multipleApiUsers; switchApiUser = multipleApiUsers; break;
