@@ -174,3 +174,4 @@ If you want to use callbacks for more than just error handling, you can optional
 * 0.0.10 Code cleanup and package json updates
 * 0.0.11 changed to MIT license added LICENSE file
 * 0.1.0 added a silent option to ignore console logs
+* 0.1.1 Removed MomentJS dependency, Removed Lodash library. Moved to individual needed functions. Add Row lock error to retry logic on queries.
