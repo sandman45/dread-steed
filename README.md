@@ -2,6 +2,8 @@
 
 Module that helps handle a salesforce connection and all the fun mess that comes with salesforce.
 
+https://gph.is/2sE5m9d
+
 ## Installation
     npm install dread-steed --save
 ## Configuration
